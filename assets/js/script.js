@@ -1,5 +1,7 @@
 var tasks = {};
 
+
+
 var createTask = function(taskText, taskDate, taskList) {
   // create elements that make up a task item
   var taskLi = $("<li>").addClass("list-group-item");
@@ -135,7 +137,61 @@ $(".list-group").on("blur", "input[type='text']", function(){
   
   //replace input with span element
   $(this).replaceWith(taskSpan);
-})
+});
+
+$(".card .list-group").sortable({
+  connectWith: $(".card .list-group"),
+  scroll: false,
+  tolerance: "pointer",
+  helper: "clone",
+  activate: function(event) {
+    console.log("activate", this);
+  },
+  deactivate: function(event) {
+    console.log("deactivate", this);
+  },
+  over: function(event){
+    console.log("over", event.target);
+  },
+  out: function(event){
+    console.log("out", event.target);
+  },
+  //array to store the task data in
+
+
+  update: function(event) {
+    //array to store the task data (this had to go inside otherwise it created a new item in each column if we made it global)
+    var tempArr= [];
+
+    $(this).children().each(function() {
+      //loop over current set of children in sortable list
+      var text = $(this)
+      .find("p")
+      .text()
+      .trim();
+
+      var date = $(this)
+       .find("span")
+       .text()
+       .trim();
+
+      tempArr.push({
+        text: text,
+        date: date
+      });
+    });
+
+    //trim down list's ID to match object property
+    var arrName = $(this)
+    .attr("id")
+    .replace("list-", "");
+  
+    //update array on tasks object and save
+    tasks[arrName] = tempArr;
+    saveTasks();
+  }
+ 
+});
 
 
 
