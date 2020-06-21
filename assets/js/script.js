@@ -183,10 +183,25 @@ $(".card .list-group").sortable({
   scroll: false,
   tolerance: "pointer",
   helper: "clone",
+
+  activate: function(event) {
+    $(this).addClass("dropover")
+    $(".bottom-trash").addClass("bottom-trash-drag")
+  },
+  deactivate: function(event) {
+    $(this).removeClass("dropover");
+    $(".bottom-trash").removeClass("bottom-trash-drag")
+  },
+  over: function(event) {
+    $(event.target).addClass("dropover-active")
+    $(".bottom-trash").addClass("bottom-trash-active")
+  },
+  out: function(event) {
+    $(event.target).removeClass("dropover-active")
+    $(".bottom-trash").removeClass("bottom-trash-active")
+  },
  
   //array to store the task data in
-
-
   update: function(event) {
     //array to store the task data (this had to go inside otherwise it created a new item in each column if we made it global)
     var tempArr= [];
@@ -208,12 +223,13 @@ $(".card .list-group").sortable({
         date: date
       
       });
+
     });
 
     //trim down list's ID to match object property
     var arrName = $(this)
     .attr("id")
-    .replace("list-", "");
+    .replace("list-", "")
   
     //update array on tasks object and save
     tasks[arrName] = tempArr;
